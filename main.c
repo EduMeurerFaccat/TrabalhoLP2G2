@@ -5,8 +5,8 @@
 int main(int argc, char const *argv[])
 {
     
+    printf("Hello World!");
 
-
-    
+    system("PAUSE");
     return 0;
 }
