@@ -12,18 +12,17 @@ void erroAbrirArquivo()
     printf("\nNao e possivel abrir o arquivo!\n");
 }
 
-
-FILE * abrirArquivo(char caminho[50])
+FILE *abrirArquivo(char caminho[50])
 {
     return fopen(caminho, "ab+");
 }
 
-void escrever(Aluno aluno)
+void escrever(Pessoa aluno)
 {
     FILE *file = abrirArquivo(caminhoArquivo);
     if (file)
     {
-        fwrite(&aluno, sizeof(Aluno), 1, file);
+        fwrite(&aluno, sizeof(Pessoa), 1, file);
     }
     else
     {
@@ -34,7 +33,7 @@ void escrever(Aluno aluno)
 
 void lerArquivo(int opt, char matricula[10])
 {
-    Aluno aluno;
+    Pessoa aluno;
     Estatisticas est;
     est.quantidadeAlunos = 0;
     float somaNotas, maiorNota = 0, menorNota = 10;
@@ -44,7 +43,7 @@ void lerArquivo(int opt, char matricula[10])
     {
         while (!feof(file))
         {
-            if (fread(&aluno, sizeof(Aluno), 1, file))
+            if (fread(&aluno, sizeof(Pessoa), 1, file))
             {
                 if (opt == 1)
                 {

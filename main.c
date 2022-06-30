@@ -5,7 +5,7 @@
 int main()
 {
     int opt, repetir = 1;
-    Aluno aluno;
+    Pessoa aluno;
     char matricula[10];
     do
     {
