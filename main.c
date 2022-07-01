@@ -1,164 +1,268 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-typedef struct
+// ACONSELHO SEMPRE ESCOLHER A OPÇÃO 1 AO ABRIR O PROGRAMA POIS O MESMO PRECISA PARA CARREGAR OS REGISTROS DO ARQUIVO.
+FILE *ponteiroParaArquivo;
+int cont = 0;
+struct produtosRegistro
 {
-    char matricula[10];
-    char nome[60];
-    float notaFinal;
-} Aluno;
+    int codigoProduto;
+    char nomeProduto[100];
+    int tipoProduto;
+    int quantProduto;
+    float valorProduto;
+};
+struct produtosRegistro produto[100];
 
-typedef struct
+void verificar()
 {
-    int quantidadeAlunos;
-    float mediaTurma;
-    char alunoMenorNota[60];
-    char alunoMaiorNota[60];
-} Estatisticas;
-
-char caminhoArquivo[50] = "alunos.bin";
-
-void erroAbrirArquivo()
-{
-    printf("\nNao e possivel abrir o arquivo!\n");
-}
-
-FILE *abrirArquivo(char caminho[50])
-{
-    return fopen(caminho, "ab+");
-}
-
-void escrever(Aluno aluno)
-{
-    FILE *file = abrirArquivo(caminhoArquivo);
-    if (file)
+    char textoLido[180];
+    char codigoP[50];
+    char nome[100];
+    char tipoProd[4];
+    char quantP[4];
+    char valorP[4];
+    int x, w;
+    int contL;
+    ponteiroParaArquivo = fopen("binario.txt", "rb");
+    if (ponteiroParaArquivo == NULL)
     {
-        fwrite(&aluno, sizeof(Aluno), 1, file);
+        printf("Nao foi possivel abrir arquivo.");
     }
     else
     {
-        erroAbrirArquivo();
-    }
-    fclose(file);
-}
-
-void lerArquivo(int opt, char matricula[10])
-{
-    Aluno aluno;
-    Estatisticas est;
-    est.quantidadeAlunos = 0;
-    float somaNotas, maiorNota = 0, menorNota = 10;
-    FILE *file = abrirArquivo(caminhoArquivo);
-    int findCont = 0;
-    if (file)
-    {
-        while (!feof(file))
+        while (fgets(textoLido, 180, ponteiroParaArquivo) != NULL)
         {
-            if (fread(&aluno, sizeof(Aluno), 1, file))
+            contL = 0;
+            // PEGA O NOME
+            for (x = 0, w = 0; x < strlen(textoLido); x++)
             {
-                if (opt == 1)
+                if (textoLido[x] != ';')
                 {
-                    printf("\nMatricula: %s\nNome: %s\nNota final: %f\n\n", aluno.matricula, aluno.nome, aluno.notaFinal);
+                    nome[w] = textoLido[x];
+                    produto[cont].nomeProduto[w] = textoLido[x];
+                    w = w + 1;
+                    contL = contL + 1;
                 }
-                else if (opt == 2)
+                else
                 {
-                    if (!strcmp(aluno.matricula, matricula))
-                    {
-                        findCont = 1;
-                        printf("\nMatricula: %s\nNome: %s\nNota final: %f\n\n", aluno.matricula, aluno.nome, aluno.notaFinal);
-                    }
-                }
-                else if (opt == 3)
-                {
-                    est.quantidadeAlunos++;
-                    somaNotas += aluno.notaFinal;
-                    if (aluno.notaFinal > maiorNota)
-                    {
-                        maiorNota = aluno.notaFinal;
-                        strcpy(est.alunoMaiorNota, aluno.nome);
-                    }
-
-                    if (aluno.notaFinal < menorNota)
-                    {
-                        menorNota = aluno.notaFinal;
-                        strcpy(est.alunoMenorNota, aluno.nome);
-                    }
+                    contL = contL + 1;
+                    break;
                 }
             }
-        }
-        if (findCont == 0 && opt == 2)
-        {
-            printf("\nNao ha registro com a matricula %s", matricula);
-        }
-        if (opt == 3)
-        {
-            est.mediaTurma = somaNotas / est.quantidadeAlunos;
-            printf("\nQuantidade de alunos existentes no arquivo: %d", est.quantidadeAlunos);
-            printf("\nMedia da turma: %f", est.mediaTurma);
-            printf("\nNome do aluno com a menor nota: %s", est.alunoMenorNota);
-            printf("\nNome do aluno com a maior nota: %s", est.alunoMaiorNota);
+            printf("Nome do Produto:%s\n", nome);
+
+            // PEGA O TIPO DO PRODUTO
+            for (x = contL, w = 0; x < strlen(textoLido); x++)
+            {
+                if (textoLido[x] != ';')
+                {
+                    tipoProd[w] = textoLido[x];
+                    w = w + 1;
+                    contL = contL + 1;
+                }
+                else
+                {
+                    contL = contL + 1;
+                    break;
+                }
+            }
+            printf("Tipo do Produto:%s\n", tipoProd);
+
+            // PEGA A QUANTIDADE DO PRODUTO
+            for (x = contL, w = 0; x < strlen(textoLido); x++)
+            {
+                if (textoLido[x] != ';')
+                {
+                    quantP[w] = textoLido[x];
+                    w = w + 1;
+                    contL = contL + 1;
+                }
+                else
+                {
+                    contL = contL + 1;
+                    break;
+                }
+            }
+            printf("Quantidade do Produto:%s\n", quantP);
+
+            // PEGA O VALOR DO PRODUTO
+            for (x = contL, w = 0; x < strlen(textoLido); x++)
+            {
+                if (textoLido[x] != ';')
+                {
+                    valorP[w] = textoLido[x];
+                    w = w + 1;
+                    contL = contL + 1;
+                }
+                else
+                {
+                    contL = contL + 1;
+                    break;
+                }
+            }
+            printf("Valor do Produto:R$%s\n", valorP);
             printf("\n");
+
+            // PEGA O CODIGO DO PRODUTO
+            for (x = contL, w = 0; x < strlen(textoLido); x++)
+            {
+                if (textoLido[x] != ';')
+                {
+                    codigoP[w] = textoLido[x];
+                    w = w + 1;
+                    contL = contL + 1;
+                }
+                else
+                {
+                    contL = contL + 1;
+                    break;
+                }
+            }
+            printf("Codigo do Produto:%s\n", codigoP);
+            printf("\n");
+
+            int codigo = atoi(codigoP);
+            int tipo = atoi(tipoProd[0]);
+            int quant = atoi(quantP);
+            float valor = atof(valorP);
+
+            produto[cont].codigoProduto = codigo;
+            produto[cont].tipoProduto = tipo;
+            produto[cont].quantProduto = quant;
+            produto[cont].valorProduto = valor;
+            cont = cont + 1;
         }
+        fclose(ponteiroParaArquivo);
     }
-    else
+}
+void verificarRegistro()
+{
+    int n_codigo;
+    printf("Qual codigo devo buscar?");
+    scanf("%d", &n_codigo);
+
+    int x;
+
+    for (x = 0; x <= cont; x++)
     {
-        erroAbrirArquivo();
+        if (produto[x].codigoProduto == n_codigo)
+        {
+            printf("Matricula:%d\n", produto[x].codigoProduto);
+            printf("Nome:%s\n", produto[x].nomeProduto);
+            if (produto[cont].tipoProduto == 1)
+            {
+                printf("%d - Mouse e teclados;\n", produto[cont].tipoProduto);
+            }
+            else if (produto[cont].tipoProduto == 2)
+            {
+                printf("%d - Processadores;\n", produto[cont].tipoProduto);
+            }
+            else if (produto[cont].tipoProduto == 3)
+            {
+                printf("%d - HD e SSD;\n", produto[cont].tipoProduto);
+            }
+            else if (produto[cont].tipoProduto == 4)
+            {
+                printf("%d - Gabinetes;\n", produto[cont].tipoProduto);
+            };
+            printf("Quantidade em estoque:%d\n", produto[cont].quantProduto);
+            printf("Valor do Produto: R$%.2f\n", produto[cont].valorProduto);
+            printf(" \n");
+        }
+        else
+        {
+            if (x == cont - 1 && produto[x].codigoProduto != n_codigo)
+            {
+                printf("Não encontramos esse produto!");
+            }
+        }
     }
 }
 
-int main()
+void escreverRegistro()
 {
-    int opt, repetir = 1;
-    Aluno aluno;
-    char matricula[10];
+    printf("1- Mouse e teclados \n");
+    printf("2- Processadores \n");
+    printf("3- HD e SSD\n");
+    printf("4- Gabinetes\n");
+    printf("Digita o codigo que corresponde ao grupo do produto: ");
+    scanf("%d", &produto[cont].tipoProduto);
+
+    printf("Digite o nome do produto: ");
+    setbuf(stdin, 0);
+    fgets(produto[cont].nomeProduto, 100, stdin);
+    produto[cont].nomeProduto[strlen(produto[cont].nomeProduto) - 1] = '\0';
+
+    printf("Digite a quantidade desse Produto no estoque: ");
+    scanf("%d", &produto[cont].quantProduto);
+
+    printf("Digite o valor do produto: ");
+    scanf("%d", &produto[cont].valorProduto);
+
+    printf("Digite o codigo desse Produto: ");
+    scanf("%d", &produto[cont].codigoProduto);
+
+    ponteiroParaArquivo = fopen("binario.txt", "ab+");
+    fprintf(ponteiroParaArquivo, "%s;", produto[cont].nomeProduto);
+
+    if (produto[cont].tipoProduto == 1)
+    {
+        fprintf(ponteiroParaArquivo, "%d - Mouse e teclados;", produto[cont].tipoProduto);
+    }
+    else if (produto[cont].tipoProduto == 2)
+    {
+        fprintf(ponteiroParaArquivo, "%d - Processadores;", produto[cont].tipoProduto);
+    }
+    else if (produto[cont].tipoProduto == 3)
+    {
+        fprintf(ponteiroParaArquivo, "%d - HD e SSD;", produto[cont].tipoProduto);
+    }
+    else if (produto[cont].tipoProduto == 4)
+    {
+        fprintf(ponteiroParaArquivo, "%d - Gabinetes;", produto[cont].tipoProduto);
+    };
+
+    fprintf(ponteiroParaArquivo, "%s;", produto[cont].quantProduto);
+
+    fprintf(ponteiroParaArquivo, "%.2f;", produto[cont].valorProduto);
+
+    fprintf(ponteiroParaArquivo, "%d\n;", produto[cont].codigoProduto);
+
+    printf("Cadastrado! \n");
+    printf(" \n");
+    fclose(ponteiroParaArquivo);
+    cont = cont + 1;
+}
+
+void main()
+{
+    int id;
     do
     {
-        do
+        printf("----MENU----\n");
+        printf("1 - Apresentar todo conteúdo do arquivo\n");
+        printf("2 - Apresentar conteúdo de um registro\n");
+        printf("3 - Cadastrar um registro\n");
+        printf("4 - Estatisticas do registro\n");
+        printf("5 - SAIR\n");
+        printf("Digite sua opção: ");
+        scanf("%d", &id);
+        switch (id)
         {
-            printf("\nDigite a opcao desejada:\n1 - Apresentar todo conteudo do arquivo\n2 - Apresentar conteudo de um registro\n3 - Cadastrar um registro\n4 - Estatisticas\n5 - Fechar o programa\n");
-            scanf("%d", &opt);
-
-            if (opt < 1 || opt > 5)
-            {
-                printf("\nOpcao invalida\n");
-            }
-            system("cls");
-        } while (opt < 1 || opt > 5);
-        
-        switch (opt)
-        {
-            case 1:
-                lerArquivo(1, "");
-                break;
-            case 2:
-
-                printf("\nInforme a matricula: ");
-                scanf("%s", aluno.matricula);
-                lerArquivo(2, aluno.matricula);
-                break;
-            case 3:
-                printf("\nNome: ");
-                scanf("%s", aluno.nome);
-                printf("\nMatricula: ");
-                scanf("%s", aluno.matricula);
-                printf("\nNota Final: ");
-                scanf("%f", &aluno.notaFinal);
-
-                escrever(aluno);
-
-                break;
-            case 4:
-                lerArquivo(3, "");
-                break;
-            case 5:
-                repetir = 0;
-                break;
+        case 1:
+            verificar();
+            break;
+        case 2:
+            verificarRegistro();
+            break;
+        case 3:
+            escreverRegistro();
+            break;
+        case 4:
+            estatisticasRegistro();
+            break;
         }
-        printf("\n");
-        if(repetir > 0)
-            system("pause");
-        system("cls");
-    } while (repetir > 0);
-
-    return 0;
+    } while (id != 5);
 }
