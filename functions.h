@@ -74,7 +74,7 @@ Produto lerArquivo(int opt, int codigo)
             {
                 achou = 1;
             }
-            
+
             if (opt == 1)
             {
                 if (produto.deleted == 0)
@@ -234,7 +234,6 @@ void listarProdutos()
     clear();
     printf("===================================");
     lerArquivo(1, 0);
-    printf("===================================");
     ln();
     system("pause");
     clear();
