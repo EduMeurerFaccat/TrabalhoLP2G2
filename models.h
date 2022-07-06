@@ -3,12 +3,19 @@
 #ifndef MODELS
 #define MODELS
 
+
+#define LIMIT_RAND 100
 typedef struct
 {
-    char matricula[10];
-    char nome[60];
-    float notaFinal;
-} Pessoa;
+    int indice;
+    int codigo;
+    char nome[100];
+    int tipo;
+    int quantidade;
+    double valor;
+    int deleted;
+    
+} Produto;
 
 typedef struct
 {
